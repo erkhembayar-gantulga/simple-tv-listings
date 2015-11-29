@@ -1,0 +1,30 @@
+{
+    "name": "erheme318/mng-tv-listings",
+    "description": "Simple TV listings application",
+    "license": "MIT",
+    "type": "project",
+    "keywords": ["tv", "listings", "tv guide"],
+    "authors": [
+        {
+            "name": "Erkhembayar Gantulga",
+            "email": "erheme318@gmail.com",
+            "homepage": "http://erheme318.wordpress.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "TVListings\\": "src",
+            "TVListings\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "slim/slim": "^3.0@beta",
+        "slim/twig-view": "^1.1",
+        "slim/flash": "^0.1.0",
+        "monolog/monolog": "^1.13",
+        "doctrine/orm": "^2.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    }
+}
