@@ -22,8 +22,16 @@ interface EntityManager
 
     /**
      * @param string $class
+     * @param string $identity
+     * @param string $value
      */
     public function findOneBy($class, $identity, $value);
+
+    /**
+     * @param string $class
+     * @param array $criteria
+     */
+    public function findBy($class, $criteria);
 
     /**
      * @param string $class
