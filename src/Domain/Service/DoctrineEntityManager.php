@@ -59,6 +59,24 @@ class DoctrineEntityManager implements EntityManager
     /**
      * {@inheritDoc}
      */
+    public function findBy($class, $criteria)
+    {
+        $query = $this->em->createQueryBuilder()
+            ->select('e')
+            ->from($class, 'e');
+
+        foreach ($criteria as $key => $criterion) {
+            $query
+                ->andWhere(sprintf("%s = :%s", $criterion['builder']('e'), $key))
+                ->setParameter($key, $criterion['value']);
+        }
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function findAll($class)
     {
         $query = $this->em->createQueryBuilder()

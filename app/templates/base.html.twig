@@ -19,17 +19,17 @@
 			<span class="dialog-next"><a href="" class="ch-next pull-right"><i class="fa fa-angle-right"></i></a></span>
 		    <span class="swiper-slide ">
 			<span class="angle"></span>
-			<a class="live-item " data-id="1" href="/1/watch"><img src="http://tv.univision.mn/img/logo_mon_mnb.png" alt="MNB 2"></a>
+			<a class="live-item " data-id="1" href="/1/watch"><img src="http://tv.univision.mn/img/logo_mon_mnb.png" alt="{{ channel.name }}"></a>
 		    </span>
 			<span class="dialog-date channel-date">Ням / {{ "now"|date('Y-m-d') }}</span>
 		    </div>
 		</div>
 		<div class="col-lg-12 padd-del" style="width: 350px; height: 348px; overflow-y: scroll;" id="program-list">
 		    <ul class="list-unstyled clearfix channel-list channel-inner schedule-live">
-                        {% for channel in channels %}
+                        {% for listing in listings %}
                             <li class="past">
-                                <span class="channel-time label label-default">00:00</span>
-                                <a id="751695" name="751695" href="http://tv.univision.mn/751695/archive/mnb-2/2015-11-29">{{ channel.name }}</a>
+                                <span class="channel-time label label-default">{{ listing.programmedTime }}</span>
+                                <a id="751695" name="751695" href="#">{{ listing.title }}</a>
                             </li>
                         {% endfor %}
 		    </ul>

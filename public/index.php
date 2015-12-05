@@ -23,8 +23,11 @@ $configuration = array(
     'settings' => array(
         'displayErrorDetails' => true,
         'doctrine' => array(
-            'driver' => 'pdo_sqlite',
-            'path' => __DIR__ . '/db.sqlite',
+            'driver' => 'pdo_mysql',
+            'dbname' => 'mn_tv_listings',
+            'user' => 'root',
+            'password' => '$secret',
+            'host' => 'localhost',
         ),
         'view' => array(
             'template_path' => __DIR__ . '/../app/templates',
@@ -67,9 +70,17 @@ $container['doctrine.orm.entity_manager'] = function ($container) {
         )
     );
 
+    $config->setCustomDatetimeFunctions(array(
+        'DATE'  => 'DoctrineExtensions\Query\Mysql\Date',
+    ));
+
+
     $conn = array(
         'driver' => $settings['doctrine']['driver'],
-        'path' => $settings['doctrine']['path'],
+        'host' => $settings['doctrine']['host'],
+        'dbname' => $settings['doctrine']['dbname'],
+        'user' => $settings['doctrine']['user'],
+        'password' => $settings['doctrine']['password'],
     );
 
     return EntityManager::create($conn, $config);
@@ -83,13 +94,16 @@ $container['tvlistings.channel.repository'] = function ($container) {
 
 $app->get('/', function ($request, $response, $args) {
     $container = $this->getContainer();
-    $channels = $container->get('tvlistings.channel.repository')->findAll();
+
+    $channel = $container->get('tvlistings.channel.repository')->findOneBySlug('mnb');
+    $listings = $container->get('tvlistings.channel.repository')->getTodayListings($channel);
 
     $this->view->render(
         $response,
         'base.html.twig',
         array(
-            'channels' => $channels
+            'channel' => $channel,
+            'listings' => $listings,
         )
     );
 

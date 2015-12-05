@@ -24,10 +24,15 @@ class ListingTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_be_created_with_channel_and_program_date()
     {
-        $listing = new Listing($this->channel, new \DateTime());
+        $listing = new Listing(
+            $this->channel,
+            "News",
+            new \DateTime()
+        );
 
         $this->assertInstanceOf('TVListings\Domain\Entity\Channel', $listing->getChannel());
         $this->assertEquals($this->channel, $listing->getChannel());
+        $this->assertEquals("News", $listing->getTitle());
         $this->assertEquals(new \DateTime(), $listing->getProgramDate());
     }
 
@@ -36,7 +41,12 @@ class ListingTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_be_able_to_be_programable_by_time()
     {
-        $listing = new Listing($this->channel, new \DateTime("2015-11-28 18:00"));
+        $listing = new Listing(
+            $this->channel,
+            "News",
+            new \DateTime("2015-11-28 18:00")
+        );
+
         $this->assertEquals("18:00", $listing->getProgrammedTime());
         $listing->programAt("20:00");
 
@@ -48,7 +58,13 @@ class ListingTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_be_able_to_change_resource_link()
     {
-        $listing = new Listing($this->channel, new \DateTime("2015-11-28 18:00"), "http://wronglink");
+        $listing = new Listing(
+            $this->channel,
+            "News",
+            new \DateTime("2015-11-28 18:00"),
+            "http://wronglink"
+        );
+
         $this->assertEquals("http://wronglink", $listing->getResourceLink());
         $listing->changeResourceLink("http://test.com/hello");
 
@@ -60,7 +76,12 @@ class ListingTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_be_active_if_resource_link_is_provided()
     {
-        $listing = new Listing($this->channel, new \DateTime("2015-11-28 18:00"));
+        $listing = new Listing(
+            $this->channel,
+            "News",
+            new \DateTime("2015-11-28 18:00")
+        );
+
         $this->assertEquals(null, $listing->getResourceLink());
         $this->assertFalse($listing->isActive());
 
@@ -73,7 +94,12 @@ class ListingTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_be_able_to_change_description()
     {
-        $listing = new Listing($this->channel, new \DateTime("2015-11-28 18:00"));
+        $listing = new Listing(
+            $this->channel,
+            "News",
+            new \DateTime("2015-11-28 18:00")
+        );
+
         $this->assertEquals(null, $listing->getDescription());
         $listing->setDescription("Listing details are here");
 
