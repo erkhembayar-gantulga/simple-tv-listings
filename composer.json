@@ -22,7 +22,8 @@
         "slim/twig-view": "^1.1",
         "slim/flash": "^0.1.0",
         "monolog/monolog": "^1.13",
-        "doctrine/orm": "^2.5"
+        "doctrine/orm": "^2.5",
+        "beberlei/DoctrineExtensions": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8"
