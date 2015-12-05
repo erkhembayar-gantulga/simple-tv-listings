@@ -20,6 +20,12 @@ class Listing
     private $channel;
 
     /**
+     * @Column(type="string")
+     * @var string
+     */
+    private $title;
+
+    /**
      * @Column(type="datetime")
      * @var \DateTime
      */
@@ -32,13 +38,13 @@ class Listing
     private $programmedTime;
 
     /**
-     * @Column(type="string")
+     * @Column(type="string", nullable=true)
      * @var string
      */
     private $resourceLink;
 
     /**
-     * @Column(type="string")
+     * @Column(type="string", nullable=true)
      * @var string
      */
     private $description;
@@ -47,9 +53,14 @@ class Listing
      * @param Channel $channel
      * @param \DateTime $programDate
      */
-    public function __construct(Channel $channel, \DateTime $programDate, $resourceLink = null)
-    {
+    public function __construct(
+        Channel $channel,
+        $title,
+        \DateTime $programDate,
+        $resourceLink = null
+    ) {
         $this->channel = $channel;
+        $this->title = $title;
         $this->programDate = $programDate;
         $this->programmedTime = $programDate->format("G:i");
         $this->resourceLink = $resourceLink;
@@ -61,6 +72,11 @@ class Listing
     public function getChannel()
     {
         return $this->channel;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     /**
