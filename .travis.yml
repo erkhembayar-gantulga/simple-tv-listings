@@ -10,12 +10,5 @@ install:
     - composer self-update
     - composer install
 
-before_script:
-    - php vendor/bin/doctrine orm:schema-tool:create
-    - php vendor/bin/doctrine orm:schema-tool:update --force
-
 script:
     - phpunit --coverage-text
-
-after_script:
-    - php vendor/bin/doctrine orm:schema-tool:drop --force
