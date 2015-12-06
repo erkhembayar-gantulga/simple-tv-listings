@@ -79,13 +79,40 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_should_retrieve_listings_by_channel()
+    {
+        $em = new DoctrineEntityManager($this->em);
+        $mnb = new Channel("MNB", "mnb.png");
+        $mn25 = new Channel("MN25", "mn25.png");
+        $em->persist($mnb);
+        $em->persist($mn25);
+
+        $mnbListing = new Listing($mnb, "News", new \DateTime('-1 day'));
+        $em->persist($mnbListing);
+
+        $criteria = array(
+            'channel' => array(
+                'builder' => function ($alias) {
+                    return sprintf("%s.channel", $alias);
+                },
+                'value' => $mnb
+            ),
+        );
+
+        $listings = $em->findBy(Listing::class, $criteria);
+
+        $this->assertEquals(1, count($listings));
+    }
+
+    /**
+     * @test
+     */
     public function it_should_retrieve_todays_listings_by_channel()
     {
         $em = new DoctrineEntityManager($this->em);
         $channel = new Channel("MNB", "mnb.png");
         $em->persist($channel);
 
-        $channel = $em->findOneBy(Channel::class, "slug", "mnb");
         $yesterdayListing = new Listing($channel, "News", new \DateTime('-1 day'));
         $em->persist($yesterdayListing);
         $todayListing1 = new Listing($channel, "News",  new \DateTime());

@@ -31,7 +31,14 @@ class ListingRepository
      */
     public function findBy(Channel $channel)
     {
-        $criteria = array();
+        $criteria = array(
+            'channel' => array(
+                'builder' => function ($alias) {
+                    return sprintf("%s.channel", $alias);
+                },
+                'value' => $channel
+            ),
+        );
 
         return $this->entityManager->findBy(
             Listing::class,
