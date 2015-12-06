@@ -1,0 +1,33 @@
+{% extends "admin/base.html.twig" %}
+
+{% block content %}
+
+<form action="{{ path_for('admin_listing_new', {'slug': channel.slug }) }}" method="post">
+  <div class="form-group">
+    <input type="hidden" class="form-control" name="channel" value="{{ channel.id }}" >
+    <label for="title">Нэвтрүүлгийн нэр</label>
+    <input type="text" class="form-control" id="title" placeholder="нэвтрүүлгийн нэр" name="title" required>
+  </div>
+  <div class="form-group">
+    <label for="programDate">Гараг</label>
+    <input type="text" class="form-control" id="programDate" placeholder="гараг" name="programDate" required>
+  </div>
+  <div class="form-group">
+    <label for="name">Цаг</label>
+    <input type="text" class="form-control" id="programAt" placeholder="нэвтрүүлгийн гарах цаг" name="programAt" required>
+  </div>
+  <div class="form-group">
+    <label for="resourceLink">Холбоос линк</label>
+    <input type="text" class="form-control" id="resourceLink" placeholder="Видеоны линк" name="resourceLink">
+  </div>
+  <div class="form-group">
+    <label for="description">Дэлгэрэнгүй</label>
+    <textarea class="form-control" rows="3" id="description" placeholder="Нэтврүүлгийн дэлгэрэнгүй танилцуулга" name="description"></textarea>
+  </div>
+  <button type="submit" class="btn btn-default">Оруулах</button>
+</form>
+
+
+<br />
+<a href="{{ path_for('admin_channel_show', {'slug': channel.slug }) }}" title="Back" > Буцах </a>
+{% endblock %}

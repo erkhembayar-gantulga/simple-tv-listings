@@ -1,0 +1,35 @@
+{% extends "admin/base.html.twig" %}
+
+{% block content %}
+<h1 class="page-header">{{ channel.name }}</h1>
+
+<a href="{{ path_for('admin_listing_new', {'slug': channel.slug }) }}"> Шинэ хөтөлбөр оруулах</a>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Нэвтрүүлгийн нэр</th>
+        <th>Гараг</th>
+        <th>Цаг</th>
+        <th>Холбоос линк</th>
+        <th>Дэлгэрэнгүй тайлбар</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for listing in listings %}
+        <tr>
+          <td>{{ listing.title }}</td>
+          <td>{{ listing.programDate|date('Y-m-d') }}</td>
+          <td>{{ listing.programmedTime }}</td>
+          <td>{{ listing.resourceLink }}</td>
+          <td>{{ listing.description }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<nav>
+  Нийт холбоосын тоо: <span class="badge">{{ listings|length }}</span>
+</nav>
+{% endblock %}
