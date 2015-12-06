@@ -39,21 +39,11 @@ class ListingRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $channel = new Channel("MNB", 'mnb.png');
 
-        $criteria = array(
-            'channel' => array(
-                'builder' => function ($alias) {
-                    return sprintf("%s.channel", $alias);
-                },
-                'value' => $channel
-            ),
-        );
-
         $this->entityManager
             ->expects($this->once())
             ->method('findBy')
             ->with(
-                $this->equalTo(Listing::class),
-                $this->equalTo($criteria)
+                $this->equalTo(Listing::class)
             )
             ->willReturn(array());
 
