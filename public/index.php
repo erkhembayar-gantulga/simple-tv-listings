@@ -117,9 +117,36 @@ $app->get('/', function ($request, $response, $args) {
     );
 
     return $response->write($body);
+})->setName('homepage');
+
+$app->get('/{slug}', function ($request, $response, $args) {
+    $container = $this->getContainer();
+
+    $channel = $container->get('tvlistings.channel.repository')->findOneBySlug($args['slug']);
+    if (null === $channel) {
+        $uri = $this->router->pathFor(
+            'homepage',
+            array()
+        );
+
+        return $response->withRedirect((string)$uri, 301);
+    }
+
+    $listings = $container->get('tvlistings.channel.repository')->getTodayListings($channel);
+
+    $this->view->render(
+        $response,
+        'base.html.twig',
+        array(
+            'channel' => $channel,
+            'listings' => $listings,
+        )
+    );
+
+    return $response->write($body);
 });
 
-$app->get('/admin', function ($request, $response, $args) {
+$app->get('/admin/', function ($request, $response, $args) {
     $container = $this->getContainer();
 
     $channels = $container->get('tvlistings.channel.repository')->findAll();
