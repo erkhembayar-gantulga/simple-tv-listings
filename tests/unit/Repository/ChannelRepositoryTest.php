@@ -22,7 +22,7 @@ class ChannelRepositoryTest extends \PHPUnit_Framework_TestCase
     {
        $repo = new ChannelRepository($this->entityManager);
 
-       $channel = new Channel("MNB", __DIR__ . "/../../../public/logos/mnb.png");
+       $channel = new Channel("MNB", "mnb.png");
        $this->entityManager
            ->expects($this->once())
            ->method('persist');
@@ -37,7 +37,7 @@ class ChannelRepositoryTest extends \PHPUnit_Framework_TestCase
     {
        $repo = new ChannelRepository($this->entityManager);
 
-       $channel = new Channel("MNB", __DIR__ . "/../../../public/logos/mnb.png");
+       $channel = new Channel("MNB", "mnb.png");
        $this->entityManager
            ->expects($this->once())
            ->method('remove')
@@ -68,7 +68,7 @@ class ChannelRepositoryTest extends \PHPUnit_Framework_TestCase
     public function it_should_fetch_a_channel_by_slug()
     {
        $repo = new ChannelRepository($this->entityManager);
-       $channel = new Channel("MNB", __DIR__ . "/../../../public/logos/mnb.png");
+       $channel = new Channel("MNB", "mnb.png");
        $this->entityManager
            ->expects($this->once())
            ->method('findOneBy')
@@ -88,7 +88,7 @@ class ChannelRepositoryTest extends \PHPUnit_Framework_TestCase
     public function it_should_retrieve_todays_listings_by_channel()
     {
        $repo = new ChannelRepository($this->entityManager);
-       $channel = new Channel("MNB", __DIR__ . "/../../../public/logos/mnb.png");
+       $channel = new Channel("MNB", "mnb.png");
 
        $this->entityManager
            ->expects($this->once())
