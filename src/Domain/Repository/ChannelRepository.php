@@ -27,6 +27,14 @@ class ChannelRepository
     }
 
     /**
+     * @param Channel $channel
+     */
+    public function delete(Channel $channel)
+    {
+        $this->entityManager->remove($channel);
+    }
+
+    /**
      * @return array
      */
     public function findAll()

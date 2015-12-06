@@ -113,4 +113,19 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, count($listings));
         $this->assertEquals("News", $listings[0]->getTitle());
     }
+
+    /**
+     * @test
+     */
+    public function it_should_remove_entity()
+    {
+        $em = new DoctrineEntityManager($this->em);
+        $channel = new Channel("MNB", "mnb.png");
+        $em->persist($channel);
+
+        $this->assertEquals(1, count($em->findAll(Channel::class)));
+
+        $em->remove($channel);
+        $this->assertEquals(0, count($em->findAll(Channel::class)));
+    }
 }
