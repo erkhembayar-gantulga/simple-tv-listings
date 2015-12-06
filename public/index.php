@@ -30,7 +30,7 @@ $configuration = array(
             'driver' => 'pdo_mysql',
             'dbname' => 'mn_tv_listings',
             'user' => 'root',
-            'password' => '$secret',
+            'password' => '$ecret',
             'host' => 'localhost',
         ),
         'view' => array(
@@ -170,7 +170,15 @@ $app->map(['GET', 'POST'], '/admin/channels/new', function ($request, $response,
         $channelRepository = $container->get('tvlistings.channel.repository');
         $channel = new Channel($parsedBody['name'], $parsedBody['logoPath']);
         $channelRepository->persist($channel);
+
+        $uri = $this->router->pathFor(
+            'admin_homepage',
+            array()
+        );
+
+        return $response->withRedirect((string)$uri, 301);
     }
+
     $this->view->render(
         $response,
         'admin/new.html.twig',
@@ -180,25 +188,29 @@ $app->map(['GET', 'POST'], '/admin/channels/new', function ($request, $response,
     return $response->write($body);
 })->setName('admin_channel_new');
 
-$app->group('/admin/channels/{slug}', function () {
-    $this->delete('', function ($request, $response, $args) {
-        if ($request->isDelete()) {
-            echo "blah";die;
-        }
-        $container = $this->getContainer();
-        $parsedBody = $request->getParsedBody();
-        $channel = $container->get('tvlistings.channel.repository')->findOneBySlug($slug);
-        $channelRepository->remove($channel);
-
-        $this->view->render(
-            $response,
-            'admin/new.html.twig',
+$app->post('/admin/channels/{slug}', function ($request, $response, $args) {
+    $container = $this->getContainer();
+    $channel = $container->get('tvlistings.channel.repository')->findOneBySlug($args['slug']);
+    if (null === $channel) {
+        $uri = $this->router->pathFor(
+            'homepage',
             array()
         );
 
-        return $response->write($body);
-    })->setName('admin_channel_delete');
+        return $response->withRedirect((string)$uri, 301);
+    }
 
+    $container->get('tvlistings.channel.repository')->delete($channel);
+
+    $uri = $this->router->pathFor(
+        'admin_homepage',
+        array()
+    );
+
+    return $response->withRedirect((string)$uri, 301);
+})->setName('admin_channel_delete');
+
+$app->group('/admin/channels/{slug}', function () {
     $this->get('', function ($request, $response, $args) {
         $container = $this->getContainer();
         $parsedBody = $request->getParsedBody();

@@ -30,7 +30,7 @@ class DoctrineEntityManager implements EntityManager
      */
     public function remove($entity)
     {
-        $this->em->detach($entity);
+        $this->em->remove($entity);
         $this->em->flush();
     }
 

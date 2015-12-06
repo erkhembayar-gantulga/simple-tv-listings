@@ -33,6 +33,22 @@ class ChannelRepositoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_should_delete_channel()
+    {
+       $repo = new ChannelRepository($this->entityManager);
+
+       $channel = new Channel("MNB", __DIR__ . "/../../../public/logos/mnb.png");
+       $this->entityManager
+           ->expects($this->once())
+           ->method('remove')
+           ->with($this->equalTo($channel));
+
+       $repo->delete($channel);
+    }
+
+    /**
+     * @test
+     */
     public function it_should_fetch_all_channels()
     {
        $repo = new ChannelRepository($this->entityManager);
