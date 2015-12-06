@@ -78,7 +78,6 @@ $container['doctrine.orm.entity_manager'] = function ($container) {
         'DATE'  => 'DoctrineExtensions\Query\Mysql\Date',
     ));
 
-
     $conn = array(
         'driver' => $settings['doctrine']['driver'],
         'host' => $settings['doctrine']['host'],

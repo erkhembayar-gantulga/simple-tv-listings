@@ -37,13 +37,16 @@ class ListingRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_retrieve_all_listings_by_channel()
     {
-       $channel = new Channel("MNB", 'mnb.png');
+        $channel = new Channel("MNB", 'mnb.png');
 
-       $this->entityManager
-           ->expects($this->once())
-           ->method('findBy')
-           ->willReturn(array());
+        $this->entityManager
+            ->expects($this->once())
+            ->method('findBy')
+            ->with(
+                $this->equalTo(Listing::class)
+            )
+            ->willReturn(array());
 
-       $this->assertEquals(array(), $this->repo->findBy($channel));
+        $this->assertEquals(array(), $this->repo->findBy($channel));
     }
 }
