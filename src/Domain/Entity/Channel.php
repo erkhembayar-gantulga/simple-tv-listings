@@ -46,10 +46,6 @@ class Channel
     {
         $this->name = $name;
 
-        if (!file_exists($logoPath)) {
-            throw new \InvalidArgumentException("A logo doesn't exist.");
-        }
-
         $this->logoPath = $logoPath;
         $this->slug = strtolower($this->name);
     }

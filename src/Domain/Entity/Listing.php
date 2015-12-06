@@ -92,6 +92,10 @@ class Listing
      */
     public function programAt($programmedTime)
     {
+        if (null === $programmedTime) {
+            throw new \InvalidArgumentException("Program time shouldn't be null");
+        }
+
         $this->programmedTime = $programmedTime;
     }
 

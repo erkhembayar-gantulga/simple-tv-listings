@@ -1,0 +1,21 @@
+{% extends "admin/base.html.twig" %}
+
+{% block content %}
+
+<form action="{{ path_for('admin_channel_new') }}" method="post">
+  <div class="form-group">
+    <label for="name">Сувгын нэр</label>
+    <input type="text" class="form-control" id="name" placeholder="name" name="name" required>
+  </div>
+  <div class="form-group">
+    <label for="logo">Лого</label>
+    <input type="file" id="logo" name="logoPath" required>
+    <p class="help-block">*.jpg, *.png, *.gif өргөтгөлтэй зургууд оруулах боломжтой.</p>
+  </div>
+  <button type="submit" class="btn btn-default">Оруулах</button>
+</form>
+
+
+<br />
+<a href="{{ path_for('admin_homepage') }}" title="Back" > Back to the list </a>
+{% endblock %}

@@ -105,4 +105,19 @@ class ListingTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals("Listing details are here", $listing->getDescription());
     }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function it_should_guard_againts_programmed_time_null_value()
+    {
+        $listing = new Listing(
+            $this->channel,
+            "News",
+            new \DateTime("2015-11-28 18:00")
+        );
+
+        $listing->programAt(null);
+    }
 }

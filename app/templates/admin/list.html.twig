@@ -1,0 +1,41 @@
+{% extends "admin/base.html.twig" %}
+
+{% block content %}
+<h1 class="page-header">ТВ сувгууд</h1>
+
+<a href="{{ path_for('admin_channel_new') }}"> Шинэ суваг оруулах</a>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Logo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for channel in channels %}
+        <tr>
+          <td><a href="{{ path_for('admin_channel_show', { 'slug': channel.slug }) }}">{{ channel.name }}</a></td>
+          <td>{{ channel.logoPath }}</td>
+          <td>
+              <form action="{{ path_for('admin_channel_delete', {'slug': channel.slug }) }}" method="delete" novalidate>
+                  <input type="hidden" id="_method" name="_method" value="DELETE">
+                  <button onclick="return confirm('Та үнэхээр энэ сувгыг холбоосыг устгамаар байна уу ?');"
+                      class="btn btn-danger btn-confirm btn-xs" type="submit">
+                        <i class="glyphicon glyphicon-trash" data-toggle="modal"
+                           data-target="#confirmation-modal"></i>
+                        Устгах
+                  </button>
+              </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<nav>
+  Нийт холбоосын тоо: <span class="badge">{{ channels|length }}</span>
+</nav>
+{% endblock %}
