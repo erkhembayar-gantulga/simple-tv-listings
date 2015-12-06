@@ -47,11 +47,21 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
     {
         $em = new DoctrineEntityManager($this->em);
 
-        $channel = new Channel("MNB", __DIR__ . "/../../../public/logos/mnb.png");
+        $channel = new Channel("MNB", "mnb.png");
         $em->persist($channel);
 
-        $channel = new Channel("MNB", __DIR__ . "/../../../public/logos/mnb.png");
+        $channel = new Channel("MNB", "mnb.png");
         $em->persist($channel);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_return_null_if_no_channel_is_found()
+    {
+        $em = new DoctrineEntityManager($this->em);
+
+        $this->assertEquals(null, $em->findOneBy(Channel::class, "slug", "blah"));
     }
 
     /**
@@ -60,7 +70,7 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
     public function it_should_find_a_channel_by_slug()
     {
         $em = new DoctrineEntityManager($this->em);
-        $channel = new Channel("MNB", __DIR__ . "/../../../public/logos/mnb.png");
+        $channel = new Channel("MNB", "mnb.png");
         $em->persist($channel);
 
         $this->assertEquals("MNB", $em->findOneBy(Channel::class, "slug", "mnb")->getName());
@@ -72,7 +82,7 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
     public function it_should_retrieve_todays_listings_by_channel()
     {
         $em = new DoctrineEntityManager($this->em);
-        $channel = new Channel("MNB", __DIR__ . "/../../../public/logos/mnb.png");
+        $channel = new Channel("MNB", "mnb.png");
         $em->persist($channel);
 
         $channel = $em->findOneBy(Channel::class, "slug", "mnb");
