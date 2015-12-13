@@ -261,6 +261,35 @@ $app->group('/admin/channels/{slug}', function () {
 
         return $response->write($body);
     })->setName('admin_listing_new');
+
+    $this->map(['GET', 'POST'], '/edit', function ($request, $response, $args) {
+
+        $channelRepository = $this->getContainer()->get('tvlistings.channel.repository');
+        $channel = $channelRepository->findOneBySlug($args['slug']);
+        if ($request->isPost()) {
+            $parsedBody = $request->getParsedBody();
+            $channel->changeName($parsedBody['name']);
+            $channel->changeLogoPath($parsedBody['logoPath']);
+            $channelRepository->persist($channel);
+
+            $uri = $this->router->pathFor(
+                'admin_homepage',
+                array()
+            );
+
+            return $response->withRedirect((string)$uri, 301);
+        }
+
+        $this->view->render(
+            $response,
+            'admin/edit.html.twig',
+            array(
+                'channel' => $channel,
+            )
+        );
+
+        return $response->write($body);
+    })->setName('admin_channel_edit');
 });
 
 // Run!

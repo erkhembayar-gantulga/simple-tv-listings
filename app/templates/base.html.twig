@@ -29,7 +29,13 @@
                         {% for listing in listings %}
                             <li class="past">
                                 <span class="channel-time label label-default">{{ listing.programmedTime }}</span>
-                                <a id="751695" name="751695" href="#">{{ listing.title }}</a>
+                                {% if listing.resourceLink %}
+                                    <a href="#" onclick="window.open('{{ listing.resourceLink }}','','width=1000,height=600'); return false;" target="popup">
+                                        {{ listing.title }}
+                                    </a>
+                                {% else %}
+                                    <a href="#">{{ listing.title }}</a>
+                                {% endif %}
                             </li>
                         {% endfor %}
 		    </ul>
