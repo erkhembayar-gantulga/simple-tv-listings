@@ -39,7 +39,9 @@ $container['hello_service'] = function ($container) {
 // Register component on container
 $container['view'] = function ($c) {
     $settings = $c->get('settings');
-    $view = new \Slim\Views\Twig(__DIR__ . $settings['view']['template_path'], $settings['view']['twig']);
+    $twigOptions = $settings['view']['twig'];
+    $twigOptions['cache'] = __DIR__ . $settings['view']['twig'];
+    $view = new \Slim\Views\Twig(__DIR__ . $settings['view']['template_path'], $twigOptions);
     $view->addExtension(new \Slim\Views\TwigExtension(
         $c->get('router'),
         $c->get('request')->getUri()
@@ -100,7 +102,7 @@ $app->get('/', function ($request, $response, $args) {
         )
     );
 
-    return $response->write($body);
+    return $response;
 })->setName('homepage');
 
 $app->get('/{slug}', function ($request, $response, $args) {
@@ -127,7 +129,7 @@ $app->get('/{slug}', function ($request, $response, $args) {
         )
     );
 
-    return $response->write($body);
+    return $response;
 });
 
 $app->get('/admin/', function ($request, $response, $args) {
@@ -143,7 +145,7 @@ $app->get('/admin/', function ($request, $response, $args) {
         )
     );
 
-    return $response->write($body);
+    return $response;
 })->setName('admin_homepage');
 
 $app->map(['GET', 'POST'], '/admin/channels/new', function ($request, $response, $args) {
@@ -169,7 +171,7 @@ $app->map(['GET', 'POST'], '/admin/channels/new', function ($request, $response,
         array()
     );
 
-    return $response->write($body);
+    return $response;
 })->setName('admin_channel_new');
 
 $app->post('/admin/channels/{slug}', function ($request, $response, $args) {
@@ -212,7 +214,7 @@ $app->group('/admin/channels/{slug}', function () {
             )
         );
 
-        return $response->write($body);
+        return $response;
     })->setName('admin_channel_show');
 
     $this->map(['GET', 'POST'], '/listings/new', function ($request, $response, $args) {
@@ -244,7 +246,7 @@ $app->group('/admin/channels/{slug}', function () {
             )
         );
 
-        return $response->write($body);
+        return $response;
     })->setName('admin_listing_new');
 
     $this->map(['GET', 'POST'], '/edit', function ($request, $response, $args) {
@@ -273,7 +275,7 @@ $app->group('/admin/channels/{slug}', function () {
             )
         );
 
-        return $response->write($body);
+        return $response;
     })->setName('admin_channel_edit');
 });
 
@@ -334,7 +336,7 @@ $app->group('/admin/listings/{id}', function () {
             )
         );
 
-        return $response->write($body);
+        return $response;
     })->setName('admin_listing_edit');
 });
 
