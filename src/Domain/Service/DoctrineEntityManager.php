@@ -73,6 +73,12 @@ class DoctrineEntityManager implements EntityManager
             ->select('e')
             ->from($class, 'e');
 
+        if (isset($criteria['orderBy'])) {
+            $orderByCriterion = $criteria['orderBy'];
+            $query->orderBy($orderByCriterion['builder']('e'), $orderByCriterion['value']);
+            unset($criteria['orderBy']);
+        }
+
         foreach ($criteria as $key => $criterion) {
             $query
                 ->andWhere(sprintf("%s = :%s", $criterion['builder']('e'), $key))

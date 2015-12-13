@@ -69,6 +69,12 @@ class ChannelRepository
                },
                'value' => (new \DateTime())->format('Y-m-d')
             ),
+            'orderBy' => array(
+               'builder' => function ($alias) {
+                    return sprintf("%s.programmedTime", $alias);
+               },
+               'value' => 'ASC',
+            ),
         );
 
         return $this->entityManager->findBy(
