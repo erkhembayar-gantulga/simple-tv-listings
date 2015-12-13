@@ -155,4 +155,19 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
         $em->remove($channel);
         $this->assertEquals(0, count($em->findAll(Channel::class)));
     }
+
+    /**
+     * @test
+     */
+    public function it_should_find_a_listing_by_identity()
+    {
+        $em = new DoctrineEntityManager($this->em);
+        $channel = new Channel("MNB", 'mnb.png');
+        $em->persist($channel);
+
+        $listing = new Listing($channel, "News", new \DateTime());
+        $em->persist($listing);
+
+        $this->assertEquals($listing, $em->find(Listing::class, $listing->getId()));
+    }
 }

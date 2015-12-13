@@ -39,6 +39,14 @@ class DoctrineEntityManager implements EntityManager
      */
     public function find($class, $identity)
     {
+        $query = $this->em->createQueryBuilder()
+            ->select('e')
+            ->from($class, 'e')
+            ->where("e.id = :id")
+            ->setParameter('id', $identity)
+            ->getQuery();
+
+        return $query->getOneOrNullResult();
     }
 
     /**

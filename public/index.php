@@ -292,5 +292,30 @@ $app->group('/admin/channels/{slug}', function () {
     })->setName('admin_channel_edit');
 });
 
+$app->post('/admin/listings/{id}', function ($request, $response, $args) {
+    $listingRepository = $this->getContainer()->get('tvlistings.listing.repository');
+    $listing = $listingRepository->find($args['id']);
+    if (null === $listing) {
+        $uri = $this->router->pathFor(
+            'admin_homepage',
+            array()
+        );
+
+        return $response->withRedirect((string)$uri, 301);
+    }
+
+    $slug = $listing->getChannel()->getSlug();
+    $listingRepository->delete($listing);
+
+    $uri = $this->router->pathFor(
+        'admin_channel_show',
+        array(
+           'slug' => $slug,
+        )
+    );
+
+    return $response->withRedirect((string)$uri, 301);
+})->setName('admin_listing_delete');
+
 // Run!
 $app->run();

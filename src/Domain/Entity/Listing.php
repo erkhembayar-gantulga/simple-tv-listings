@@ -67,6 +67,14 @@ class Listing
     }
 
     /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @return Channel
      */
     public function getChannel()

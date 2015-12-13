@@ -27,6 +27,22 @@ class ListingRepository
     }
 
     /**
+     * @param int $id
+     */
+    public function find($id)
+    {
+        return $this->entityManager->find(Listing::class, $id);
+    }
+
+    /**
+     * @param Listing $listing
+     */
+    public function delete($listing)
+    {
+        return $this->entityManager->remove($listing);
+    }
+
+    /**
      * @param Channel $channel
      */
     public function findBy(Channel $channel)
