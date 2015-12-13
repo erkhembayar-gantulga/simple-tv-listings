@@ -1,0 +1,16 @@
+settings:
+    displayErrorDetails: true
+    doctrine:
+        mapping_path: '/../src/Domain/Entity'
+        driver: pdo_mysql
+        host: localhost
+        dbname: mn_tv_listings
+        user: root
+        password: root
+        charset: utf8
+    view:
+        template_path: '/../app/templates'
+        twig:
+            cache: '/../app/cache/twig'
+            debug: true
+            auto_reload: true

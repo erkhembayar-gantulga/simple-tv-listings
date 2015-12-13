@@ -1,5 +1,6 @@
 <?php
 
+use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use TVListings\Domain\Service\DoctrineEntityManager;
@@ -21,28 +22,12 @@ require __DIR__ . '/../vendor/autoload.php';
 
 session_start();
 
-// Instantiate the app
-$configuration = array(
-    'settings' => array(
-        'displayErrorDetails' => true,
-        'doctrine' => array(
-            'mapping_path' => __DIR__ . '/../src/Domain/Entity',
-            'driver' => 'pdo_mysql',
-            'dbname' => 'mn_tv_listings',
-            'user' => 'root',
-            'password' => '$ecret',
-            'host' => 'localhost',
-        ),
-        'view' => array(
-            'template_path' => __DIR__ . '/../app/templates',
-            'twig' => array(
-                'cache' => __DIR__ . '/../app/cache/twig',
-                'debug' => true,
-                'auto_reload' => true,
-            ),
-        ),
-    )
-);
+$yaml = new Parser();
+try {
+    $configuration = $yaml->parse(file_get_contents(__DIR__ . '/../app/config/config.yml'));
+} catch (ParseException $e) {
+    printf("Unable to parse the YAML string: %s", $e->getMessage());
+}
 
 $app = new \Slim\App($configuration);
 
@@ -54,7 +39,7 @@ $container['hello_service'] = function ($container) {
 // Register component on container
 $container['view'] = function ($c) {
     $settings = $c->get('settings');
-    $view = new \Slim\Views\Twig($settings['view']['template_path'], $settings['view']['twig']);
+    $view = new \Slim\Views\Twig(__DIR__ . $settings['view']['template_path'], $settings['view']['twig']);
     $view->addExtension(new \Slim\Views\TwigExtension(
         $c->get('router'),
         $c->get('request')->getUri()
@@ -69,7 +54,7 @@ $container['doctrine.orm.entity_manager'] = function ($container) {
     $isDevMode = true;
     $config = Setup::createAnnotationMetadataConfiguration(
         array(
-            $settings['doctrine']['mapping_path'],
+            __DIR__ . $settings['doctrine']['mapping_path'],
             $isDevMode,
         )
     );
