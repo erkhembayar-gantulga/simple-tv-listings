@@ -40,7 +40,7 @@ $container['hello_service'] = function ($container) {
 $container['view'] = function ($c) {
     $settings = $c->get('settings');
     $twigOptions = $settings['view']['twig'];
-    $twigOptions['cache'] = __DIR__ . $settings['view']['twig'];
+    $twigOptions['cache'] = __DIR__ . $settings['view']['twig']['cache'];
     $view = new \Slim\Views\Twig(__DIR__ . $settings['view']['template_path'], $twigOptions);
     $view->addExtension(new \Slim\Views\TwigExtension(
         $c->get('router'),
