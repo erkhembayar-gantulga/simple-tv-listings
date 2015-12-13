@@ -67,6 +67,14 @@ class Listing
     }
 
     /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @return Channel
      */
     public function getChannel()
@@ -80,11 +88,27 @@ class Listing
     }
 
     /**
+     * @param string
+     */
+    public function changeTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getProgramDate()
     {
        return $this->programDate; 
+    }
+
+    /**
+     * @param \DateTime $programDate
+     */
+    public function changeProgramDate(\DateTime $programDate)
+    {
+        return $this->programDate = $programDate;
     }
 
     /**

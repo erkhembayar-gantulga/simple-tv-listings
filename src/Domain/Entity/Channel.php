@@ -67,11 +67,27 @@ class Channel
     }
 
     /**
+     * @param string $name
+     */
+    public function changeName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
      * @return string
      */
     public function getLogoPath()
     {
         return $this->logoPath;
+    }
+
+    /**
+     * @return string $logoPath
+     */
+    public function changeLogoPath($logoPath)
+    {
+        $this->logoPath = $logoPath;
     }
 
     /**

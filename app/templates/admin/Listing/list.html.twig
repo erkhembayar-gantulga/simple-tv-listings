@@ -1,0 +1,35 @@
+<table class="table table-striped">
+<thead>
+  <tr>
+    <th>Нэвтрүүлгийн нэр</th>
+    <th>Гараг</th>
+    <th>Цаг</th>
+    <th>Холбоос линк</th>
+    <th>Дэлгэрэнгүй тайлбар</th>
+    <th>Удирдлага</th>
+  </tr>
+</thead>
+<tbody>
+  {% for listing in listings %}
+    <tr>
+      <td>{{ listing.title }}</td>
+      <td>{{ listing.programDate|date('Y-m-d') }}</td>
+      <td>{{ listing.programmedTime }}</td>
+      <td>{{ listing.resourceLink }}</td>
+      <td>{{ listing.description }}</td>
+      <td>
+          <a href="{{ path_for('admin_listing_edit', {'id': listing.id }) }}">Засах</a>
+          <form action="{{ path_for('admin_listing_delete', {'id': listing.id }) }}" method="POST" novalidate>
+              <input type="hidden" id="_method" name="_method" value="DELETE">
+              <button onclick="return confirm('Та үнэхээр энэ нэвтрүүлгийг устгамаар байна уу ?');"
+                  class="btn btn-danger btn-confirm btn-xs" type="submit">
+                    <i class="glyphicon glyphicon-trash" data-toggle="modal"
+                       data-target="#confirmation-modal"></i>
+                    Устгах
+              </button>
+          </form>
+      </td>
+    </tr>
+  {% endfor %}
+</tbody>
+</table>

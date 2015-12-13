@@ -261,6 +261,96 @@ $app->group('/admin/channels/{slug}', function () {
 
         return $response->write($body);
     })->setName('admin_listing_new');
+
+    $this->map(['GET', 'POST'], '/edit', function ($request, $response, $args) {
+
+        $channelRepository = $this->getContainer()->get('tvlistings.channel.repository');
+        $channel = $channelRepository->findOneBySlug($args['slug']);
+        if ($request->isPost()) {
+            $parsedBody = $request->getParsedBody();
+            $channel->changeName($parsedBody['name']);
+            $channel->changeLogoPath($parsedBody['logoPath']);
+            $channelRepository->persist($channel);
+
+            $uri = $this->router->pathFor(
+                'admin_homepage',
+                array()
+            );
+
+            return $response->withRedirect((string)$uri, 301);
+        }
+
+        $this->view->render(
+            $response,
+            'admin/edit.html.twig',
+            array(
+                'channel' => $channel,
+            )
+        );
+
+        return $response->write($body);
+    })->setName('admin_channel_edit');
+});
+
+$app->post('/admin/listings/{id}', function ($request, $response, $args) {
+    $listingRepository = $this->getContainer()->get('tvlistings.listing.repository');
+    $listing = $listingRepository->find($args['id']);
+    if (null === $listing) {
+        $uri = $this->router->pathFor(
+            'admin_homepage',
+            array()
+        );
+
+        return $response->withRedirect((string)$uri, 301);
+    }
+
+    $slug = $listing->getChannel()->getSlug();
+    $listingRepository->delete($listing);
+
+    $uri = $this->router->pathFor(
+        'admin_channel_show',
+        array(
+           'slug' => $slug,
+        )
+    );
+
+    return $response->withRedirect((string)$uri, 301);
+})->setName('admin_listing_delete');
+
+$app->group('/admin/listings/{id}', function () {
+    $this->map(['GET', 'POST'], '/edit', function ($request, $response, $args) {
+
+        $listingRepository = $this->getContainer()->get('tvlistings.listing.repository');
+        $listing = $listingRepository->find($args['id']);
+        if ($request->isPost()) {
+            $parsedBody = $request->getParsedBody();
+            $listing->changeTitle($parsedBody['title']);
+            $listing->changeProgramDate(new \DateTime($parsedBody['programDate']));
+            $listing->programAt($parsedBody['programAt']);
+            $listing->changeResourceLink($parsedBody['resourceLink']);
+            $listing->setDescription($parsedBody['description']);
+            $listingRepository->persist($listing);
+
+            $uri = $this->router->pathFor(
+                'admin_channel_show',
+                array(
+                    'slug' => $listing->getChannel()->getSlug(),
+                )
+            );
+
+            return $response->withRedirect((string)$uri, 301);
+        }
+
+        $this->view->render(
+            $response,
+            'admin/Listing/edit.html.twig',
+            array(
+                'listing' => $listing,
+            )
+        );
+
+        return $response->write($body);
+    })->setName('admin_listing_edit');
 });
 
 // Run!
