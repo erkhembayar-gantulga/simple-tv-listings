@@ -18,6 +18,7 @@
       <td>{{ listing.resourceLink }}</td>
       <td>{{ listing.description }}</td>
       <td>
+          <a href="{{ path_for('admin_listing_edit', {'id': listing.id }) }}">Засах</a>
           <form action="{{ path_for('admin_listing_delete', {'id': listing.id }) }}" method="POST" novalidate>
               <input type="hidden" id="_method" name="_method" value="DELETE">
               <button onclick="return confirm('Та үнэхээр энэ нэвтрүүлгийг устгамаар байна уу ?');"

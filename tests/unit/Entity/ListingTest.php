@@ -120,4 +120,40 @@ class ListingTest extends \PHPUnit_Framework_TestCase
 
         $listing->programAt(null);
     }
+
+    /**
+     * @test
+     */
+    public function it_should_change_title()
+    {
+        $listing = new Listing(
+            $this->channel,
+            "News",
+            new \DateTime("2015-11-28 18:00")
+        );
+
+        $this->assertEquals("News", $listing->getTitle());
+
+        $listing->changeTitle("Changed title");
+
+        $this->assertEquals("Changed title", $listing->getTitle());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_change_program_date()
+    {
+        $listing = new Listing(
+            $this->channel,
+            "News",
+            new \DateTime("2015-11-28 18:00")
+        );
+
+        $this->assertEquals("2015-11-28 18:00", $listing->getProgramDate()->format('Y-m-d H:i'));
+
+        $listing->changeProgramDate(new \DateTime());
+
+        $this->assertEquals((new \DateTime())->format('Y-m-d'), $listing->getProgramDate()->format('Y-m-d'));
+    }
 }

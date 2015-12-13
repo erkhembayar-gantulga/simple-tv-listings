@@ -88,11 +88,27 @@ class Listing
     }
 
     /**
+     * @param string
+     */
+    public function changeTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getProgramDate()
     {
        return $this->programDate; 
+    }
+
+    /**
+     * @param \DateTime $programDate
+     */
+    public function changeProgramDate(\DateTime $programDate)
+    {
+        return $this->programDate = $programDate;
     }
 
     /**

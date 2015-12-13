@@ -317,5 +317,41 @@ $app->post('/admin/listings/{id}', function ($request, $response, $args) {
     return $response->withRedirect((string)$uri, 301);
 })->setName('admin_listing_delete');
 
+$app->group('/admin/listings/{id}', function () {
+    $this->map(['GET', 'POST'], '/edit', function ($request, $response, $args) {
+
+        $listingRepository = $this->getContainer()->get('tvlistings.listing.repository');
+        $listing = $listingRepository->find($args['id']);
+        if ($request->isPost()) {
+            $parsedBody = $request->getParsedBody();
+            $listing->changeTitle($parsedBody['title']);
+            $listing->changeProgramDate(new \DateTime($parsedBody['programDate']));
+            $listing->programAt($parsedBody['programAt']);
+            $listing->changeResourceLink($parsedBody['resourceLink']);
+            $listing->setDescription($parsedBody['description']);
+            $listingRepository->persist($listing);
+
+            $uri = $this->router->pathFor(
+                'admin_channel_show',
+                array(
+                    'slug' => $listing->getChannel()->getSlug(),
+                )
+            );
+
+            return $response->withRedirect((string)$uri, 301);
+        }
+
+        $this->view->render(
+            $response,
+            'admin/Listing/edit.html.twig',
+            array(
+                'listing' => $listing,
+            )
+        );
+
+        return $response->write($body);
+    })->setName('admin_listing_edit');
+});
+
 // Run!
 $app->run();
