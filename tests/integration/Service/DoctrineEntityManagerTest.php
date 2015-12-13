@@ -116,8 +116,10 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
         $yesterdayListing = new Listing($channel, "News", new \DateTime('-1 day'));
         $em->persist($yesterdayListing);
         $todayListing1 = new Listing($channel, "News",  new \DateTime());
+        $todayListing1->programAt('21:00');
         $em->persist($todayListing1);
         $todayListing2 = new Listing($channel, "Friends", new \DateTime());
+        $todayListing2->programAt('12:00');
         $em->persist($todayListing2);
 
         $criteria = array(
@@ -133,12 +135,19 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
                },
                'value' => (new \DateTime())->format('Y-m-d')
             ),
+            'orderBy' => array(
+               'builder' => function ($alias) {
+                    return sprintf("%s.programmedTime", $alias);
+               },
+               'value' => 'ASC',
+            ),
         );
 
         $listings = $em->findBy(Listing::class, $criteria);
 
         $this->assertEquals(2, count($listings));
-        $this->assertEquals("News", $listings[0]->getTitle());
+        $this->assertEquals('12:00', $listings[0]->getProgrammedTime());
+        $this->assertEquals("Friends", $listings[0]->getTitle());
     }
 
     /**
