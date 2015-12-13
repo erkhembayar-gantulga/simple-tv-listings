@@ -1,3 +1,4 @@
 /vendor/
 app/cache/
 db.sqlite
+ansible
