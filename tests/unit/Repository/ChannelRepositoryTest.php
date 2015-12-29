@@ -97,4 +97,20 @@ class ChannelRepositoryTest extends \PHPUnit_Framework_TestCase
 
        $this->assertEquals(array(), $repo->getTodayListings($channel));
     }
+
+    /**
+     * @test
+     */
+    public function it_should_retrieve_channel_listings_on_specified_date()
+    {
+       $repo = new ChannelRepository($this->entityManager);
+       $channel = new Channel("MNB", "mnb.png");
+
+       $this->entityManager
+           ->expects($this->once())
+           ->method('findBy')
+           ->willReturn(array());
+
+       $this->assertEquals(array(), $repo->getListingsOf($channel, new \DateTimeImmutable('+1 day')));
+    }
 }

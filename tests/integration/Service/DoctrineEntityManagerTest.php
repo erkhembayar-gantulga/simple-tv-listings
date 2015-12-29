@@ -179,4 +179,52 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($listing, $em->find(Listing::class, $listing->getId()));
     }
+
+    /**
+     * @test
+     */
+    public function it_should_retrieve_channel_listings_on_specified_date()
+    {
+        $em = new DoctrineEntityManager($this->em);
+        $channel = new Channel("MNB", "mnb.png");
+        $em->persist($channel);
+
+        $yesterdayListing = new Listing($channel, "Yesterday's News", new \DateTime('-1 day'));
+        $em->persist($yesterdayListing);
+
+        $todayListing = new Listing($channel, "Today's News",  new \DateTime());
+        $todayListing->programAt('21:00');
+        $em->persist($todayListing);
+
+        $tomorrowListing = new Listing($channel, "Tommorrow's News", new \DateTime('+1 day'));
+        $tomorrowListing->programAt('12:00');
+        $em->persist($tomorrowListing);
+
+        $criteria = array(
+            'channel' => array(
+                'builder' => function ($alias) {
+                    return sprintf("%s.channel", $alias);
+                },
+                'value' => $channel
+            ),
+            'programDate' => array(
+               'builder' => function ($alias) {
+                    return sprintf("DATE(%s.programDate)", $alias);
+               },
+               'value' => (new \DateTime('+1 day'))->format('Y-m-d')
+            ),
+            'orderBy' => array(
+               'builder' => function ($alias) {
+                    return sprintf("%s.programmedTime", $alias);
+               },
+               'value' => 'ASC',
+            ),
+        );
+
+        $listings = $em->findBy(Listing::class, $criteria);
+
+        $this->assertEquals(1, count($listings));
+        $this->assertEquals('12:00', $listings[0]->getProgrammedTime());
+        $this->assertEquals("Tommorrow's News", $listings[0]->getTitle());
+    }
 }
