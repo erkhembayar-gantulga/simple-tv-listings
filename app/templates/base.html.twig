@@ -15,13 +15,13 @@
 	    <div class="tv-listings col-lg-7 padd-del" style="height: 423px; border:1px solid #dbdbdb;">
 		<div class="channel-nav clearfix">
 		    <div class="clearfix">
-			<span class="dialog-prev"><a href="" class="ch-prev pull-left"><i class="fa fa-angle-left"></i></a></span>
-			<span class="dialog-next"><a href="" class="ch-next pull-right"><i class="fa fa-angle-right"></i></a></span>
+			<span class="dialog-prev"><a href="{{ path_for('channel_by_date', {'slug': channel.slug }, {'on': specifiedDate.modify('-1 day').format('Y-m-d')}) }}" class="ch-prev pull-left"><i class="fa fa-angle-left"></i></a></span>
+			<span class="dialog-next"><a href="{{ path_for('channel_by_date', {'slug': channel.slug }, {'on': specifiedDate.modify('+1 day').format('Y-m-d')}) }}" class="ch-next pull-right"><i class="fa fa-angle-right"></i></a></span>
 		    <span class="swiper-slide ">
 			<span class="angle"></span>
 			<a class="live-item " data-id="1" href="/1/watch"><img src="/logos/{{ channel.logoPath }}" alt="{{ channel.name }}"></a>
 		    </span>
-			<span class="dialog-date channel-date">Ням / {{ "now"|date('Y-m-d') }}</span>
+			<span class="dialog-date channel-date"> {{ dayOfWeek(specifiedDate) }} / {{ specifiedDate|date('Y-m-d') }}</span>
 		    </div>
 		</div>
 		<div class="col-lg-12 padd-del" style="width: 350px; height: 348px; overflow-y: scroll;" id="program-list">

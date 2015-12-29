@@ -82,4 +82,38 @@ class ChannelRepository
             $criteria
         );
     }
+
+    /**
+     * @param Channel $channel
+     * @param \DateTimeImmutable $specifiedDate
+     * @return array
+     */
+    public function getListingsOf(Channel $channel, \DateTimeImmutable $specifiedDate)
+    {
+        $criteria = array(
+            'channel' => array(
+                'builder' => function ($alias) {
+                    return sprintf("%s.channel", $alias);
+                },
+                'value' => $channel
+            ),
+            'programDate' => array(
+               'builder' => function ($alias) {
+                    return sprintf("DATE(%s.programDate)", $alias);
+               },
+               'value' => $specifiedDate->format('Y-m-d')
+            ),
+            'orderBy' => array(
+               'builder' => function ($alias) {
+                    return sprintf("%s.programmedTime", $alias);
+               },
+               'value' => 'ASC',
+            ),
+        );
+
+        return $this->entityManager->findBy(
+            Listing::class,
+            $criteria
+        );
+    }
 }

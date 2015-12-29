@@ -8,6 +8,7 @@ use TVListings\Domain\Repository\ChannelRepository;
 use TVListings\Domain\Repository\ListingRepository;
 use TVListings\Domain\Entity\Channel;
 use TVListings\Domain\Entity\Listing;
+use TVListings\Infrastructure\TwigExtension\DayOfWeekExtension;
 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
@@ -47,6 +48,7 @@ $container['view'] = function ($c) {
         $c->get('request')->getUri()
     ));
     $view->addExtension(new Twig_Extension_Debug());
+    $view->addExtension(new DayOfWeekExtension());
 
     return $view;
 };
@@ -99,6 +101,7 @@ $app->get('/', function ($request, $response, $args) {
         array(
             'channel' => $channel,
             'listings' => $listings,
+            'specifiedDate' => new \DateTimeImmutable(),
         )
     );
 
@@ -118,7 +121,8 @@ $app->get('/{slug}', function ($request, $response, $args) {
         return $response->withRedirect((string)$uri, 301);
     }
 
-    $listings = $container->get('tvlistings.channel.repository')->getTodayListings($channel);
+    $specifiedDate = new \DateTimeImmutable($request->getParam('on'));
+    $listings = $container->get('tvlistings.channel.repository')->getListingsOf($channel, $specifiedDate);
 
     $this->view->render(
         $response,
@@ -126,11 +130,12 @@ $app->get('/{slug}', function ($request, $response, $args) {
         array(
             'channel' => $channel,
             'listings' => $listings,
+            'specifiedDate' => $specifiedDate,
         )
     );
 
     return $response;
-});
+})->setName('channel_by_date');
 
 $app->get('/admin/', function ($request, $response, $args) {
     $container = $this->getContainer();
