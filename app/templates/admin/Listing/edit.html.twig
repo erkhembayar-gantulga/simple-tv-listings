@@ -30,3 +30,9 @@
 <br />
 <a href="{{ path_for('admin_channel_show', {'slug': listing.channel.slug }) }}" title="Back" > Буцах</a>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {% include 'admin/Listing/datetime.html.twig' %}
+{% endblock %}
