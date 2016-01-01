@@ -285,10 +285,12 @@ $app->group('/admin/channels/{slug}', function () {
             $listing->setDescription($parsedBody['description']);
             $listingRepository->persist($listing);
 
-            $videoProxyService = $this->getContainer()->get('tvlistings.video_proxy.service');
-            $videoProxyUuid = $videoProxyService->createFromSource($parsedBody['video_source']);
-            $listing->changeResourceLink($videoProxyUuid);
-            $listingRepository->persist($listing);
+            if ($parsedBody['video_source']) {
+                $videoProxyService = $this->getContainer()->get('tvlistings.video_proxy.service');
+                $videoProxyUuid = $videoProxyService->createFromSource($parsedBody['video_source']);
+                $listing->changeResourceLink($videoProxyUuid);
+                $listingRepository->persist($listing);
+            }
 
             $uri = $this->router->pathFor(
                 'admin_channel_show',
@@ -376,14 +378,15 @@ $app->group('/admin/listings/{id}', function () {
             $listing->changeTitle($parsedBody['title']);
             $listing->changeProgramDate(new \DateTime($parsedBody['programDate']));
             $listing->programAt($parsedBody['programAt']);
-            $listing->changeResourceLink($parsedBody['resourceLink']);
             $listing->setDescription($parsedBody['description']);
             $listingRepository->persist($listing);
 
-            $videoProxyService = $this->getContainer()->get('tvlistings.video_proxy.service');
-            $videoProxyUuid = $videoProxyService->createFromSource($parsedBody['video_source']);
-            $listing->changeResourceLink($videoProxyUuid);
-            $listingRepository->persist($listing);
+            if ($parsedBody['video_source']) {
+                $videoProxyService = $this->getContainer()->get('tvlistings.video_proxy.service');
+                $videoProxyUuid = $videoProxyService->createFromSource($parsedBody['video_source']);
+                $listing->changeResourceLink($videoProxyUuid);
+                $listingRepository->persist($listing);
+            }
 
             $uri = $this->router->pathFor(
                 'admin_channel_show',

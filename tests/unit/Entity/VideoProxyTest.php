@@ -17,4 +17,23 @@ class VideoProxyTest extends \PHPUnit_Framework_TestCase
        $this->assertEquals("http://videolink", $videoProxy->getSource());
        $this->assertTrue(Uuid::isValid($videoProxy->getUuid()));
     }
+
+    /**
+     * @test
+     * @dataProvider invalidSourceProvider
+     * @expectedException \InvalidArgumentException
+     */
+    public function it_should_be_created_with_empty_video_source($source)
+    {
+       $videoProxy = new VideoProxy($source);
+    }
+
+    public function invalidSourceProvider()
+    {
+        return array(
+            array(''),
+            array(null),
+            array(""),
+        );
+    }
 }
