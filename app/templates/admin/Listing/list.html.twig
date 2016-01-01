@@ -15,7 +15,7 @@
       <td>{{ listing.title }}</td>
       <td>{{ listing.programDate|date('Y-m-d') }}</td>
       <td>{{ listing.programmedTime }}</td>
-      <td>{{ listing.resourceLink }}</td>
+      <td><a href="{{ path_for('show_video', {'uuid': listing.resourceLink }) }}" target="_blank">{{ listing.resourceLink }}</a></td>
       <td>{{ listing.description }}</td>
       <td>
           <a href="{{ path_for('admin_listing_edit', {'id': listing.id }) }}">Засах</a>

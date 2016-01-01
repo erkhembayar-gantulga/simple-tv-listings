@@ -11,7 +11,7 @@ class ListingRepository
     /**
      * @var EntityManager
      */
-    private $listing;
+    private $entityManager;
 
     public function __construct(EntityManager $entityManager)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace TVListings\Tests\Entity;
+namespace TVListings\Tests\Repository;
 
 use TVListings\Domain\Entity\Channel;
 use TVListings\Domain\Entity\Listing;
