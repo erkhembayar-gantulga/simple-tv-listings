@@ -30,7 +30,7 @@
                             <li class="past">
                                 <span class="channel-time label label-default">{{ listing.programmedTime }}</span>
                                 {% if listing.resourceLink %}
-                                    <a href="#" onclick="window.open('{{ listing.resourceLink }}','','width=1000,height=600'); return false;" target="popup">
+                                    <a href="#" onclick="window.open('{{ path_for('listing_detail', {'id': listing.id}) }}','','width=1300,height=800'); return false;" target="popup">
                                         {{ listing.title }}
                                     </a>
                                 {% else %}

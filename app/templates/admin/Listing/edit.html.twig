@@ -15,9 +15,15 @@
     <label for="name">Цаг</label>
     <input type="text" class="form-control" id="programAt" placeholder="нэвтрүүлгийн гарах цаг" name="programAt" value="{{ listing.programmedTime }}" required>
   </div>
+  {% if listing.resourceLink %}
   <div class="form-group">
-    <label for="resourceLink">Холбоос линк</label>
-    <input type="text" class="form-control" id="resourceLink" placeholder="Видеоны линк" name="resourceLink" value="{{ listing.resourceLink }}">
+    <label for="resourceLink">Хөрвүүлэгдсэн видеоны холбоос</label>
+    <input type="text" class="form-control" id="resourceLink" disabled placeholder="Видеоны линк" name="resourceLink" value="{{ listing.resourceLink }}">
+  </div>
+  {% endif %}
+  <div class="form-group">
+    <label for="video_source">Vk.com видеоны код</label>
+    <textarea class="form-control" rows="3" id="description" placeholder="Vk.com видеоны код" name="video_source"></textarea>
   </div>
   <div class="form-group">
     <label for="description">Дэлгэрэнгүй</label>

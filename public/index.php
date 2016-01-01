@@ -4,8 +4,10 @@ use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use TVListings\Domain\Service\DoctrineEntityManager;
+use TVListings\Domain\Service\VideoProxyService;
 use TVListings\Domain\Repository\ChannelRepository;
 use TVListings\Domain\Repository\ListingRepository;
+use TVListings\Domain\Repository\VideoProxyRepository;
 use TVListings\Domain\Entity\Channel;
 use TVListings\Domain\Entity\Listing;
 use TVListings\Infrastructure\TwigExtension\DayOfWeekExtension;
@@ -33,9 +35,6 @@ try {
 $app = new \Slim\App($configuration);
 
 $container = $app->getContainer();
-$container['hello_service'] = function ($container) {
-    return new TVListings\Domain\Service\HelloService();
-};
 
 // Register component on container
 $container['view'] = function ($c) {
@@ -89,6 +88,18 @@ $container['tvlistings.listing.repository'] = function ($container) {
     return new ListingRepository($em);
 };
 
+$container['tvlistings.video_proxy.service'] = function ($container) {
+    $em = new DoctrineEntityManager($container->get('doctrine.orm.entity_manager'));
+
+    return new VideoProxyService($em);
+};
+
+$container['tvlistings.video_proxy.repository'] = function ($container) {
+    $em = new DoctrineEntityManager($container->get('doctrine.orm.entity_manager'));
+
+    return new VideoProxyRepository($em);
+};
+
 $app->get('/', function ($request, $response, $args) {
     $container = $this->getContainer();
 
@@ -136,6 +147,47 @@ $app->get('/{slug}', function ($request, $response, $args) {
 
     return $response;
 })->setName('channel_by_date');
+
+$app->get('/listings/{id}', function ($request, $response, $args) {
+    $container = $this->getContainer();
+
+    $listing = $container->get('tvlistings.listing.repository')->find($args['id']);
+
+    $this->view->render(
+        $response,
+        'listing_detail.html.twig',
+        array(
+            'listing' => $listing,
+        )
+    );
+
+    return $response;
+})->setName('listing_detail');
+
+$app->get('/videos/{uuid}', function ($request, $response, $args) {
+    $container = $this->getContainer();
+
+    $videoProxy = $container->get('tvlistings.video_proxy.repository')->find($args['uuid']);
+
+    if (null === $videoProxy) {
+        $uri = $this->router->pathFor(
+            'homepage',
+            array()
+        );
+
+        return $response->withRedirect((string)$uri, 301);
+    }
+
+    $this->view->render(
+        $response,
+        'show_video.html.twig',
+        array(
+            'videoProxy' => $videoProxy,
+        )
+    );
+
+    return $response;
+})->setName('show_video');
 
 $app->get('/admin/', function ($request, $response, $args) {
     $container = $this->getContainer();
@@ -228,9 +280,14 @@ $app->group('/admin/channels/{slug}', function () {
         if ($request->isPost()) {
             $parsedBody = $request->getParsedBody();
             $listingRepository = $this->getContainer()->get('tvlistings.listing.repository');
-            $listing = new Listing($channel, $parsedBody['title'], new \DateTime($parsedBody['programDate']), $parsedBody['resourceLink']);
+            $listing = new Listing($channel, $parsedBody['title'], new \DateTime($parsedBody['programDate']));
             $listing->programAt($parsedBody['programAt']);
             $listing->setDescription($parsedBody['description']);
+            $listingRepository->persist($listing);
+
+            $videoProxyService = $this->getContainer()->get('tvlistings.video_proxy.service');
+            $videoProxyUuid = $videoProxyService->convertFromSource($parsedBody['video_source']);
+            $listing->changeResourceLink($videoProxyUuid);
             $listingRepository->persist($listing);
 
             $uri = $this->router->pathFor(
@@ -321,6 +378,11 @@ $app->group('/admin/listings/{id}', function () {
             $listing->programAt($parsedBody['programAt']);
             $listing->changeResourceLink($parsedBody['resourceLink']);
             $listing->setDescription($parsedBody['description']);
+            $listingRepository->persist($listing);
+
+            $videoProxyService = $this->getContainer()->get('tvlistings.video_proxy.service');
+            $videoProxyUuid = $videoProxyService->convertFromSource($parsedBody['video_source']);
+            $listing->changeResourceLink($videoProxyUuid);
             $listingRepository->persist($listing);
 
             $uri = $this->router->pathFor(
