@@ -286,7 +286,7 @@ $app->group('/admin/channels/{slug}', function () {
             $listingRepository->persist($listing);
 
             $videoProxyService = $this->getContainer()->get('tvlistings.video_proxy.service');
-            $videoProxyUuid = $videoProxyService->convertFromSource($parsedBody['video_source']);
+            $videoProxyUuid = $videoProxyService->createFromSource($parsedBody['video_source']);
             $listing->changeResourceLink($videoProxyUuid);
             $listingRepository->persist($listing);
 
@@ -381,7 +381,7 @@ $app->group('/admin/listings/{id}', function () {
             $listingRepository->persist($listing);
 
             $videoProxyService = $this->getContainer()->get('tvlistings.video_proxy.service');
-            $videoProxyUuid = $videoProxyService->convertFromSource($parsedBody['video_source']);
+            $videoProxyUuid = $videoProxyService->createFromSource($parsedBody['video_source']);
             $listing->changeResourceLink($videoProxyUuid);
             $listingRepository->persist($listing);
 
