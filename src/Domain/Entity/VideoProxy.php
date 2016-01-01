@@ -27,6 +27,10 @@ class VideoProxy
      */
     public function __construct($source)
     {
+        if (null === $source || "" === $source) {
+            throw new \InvalidArgumentException("Video source shouldn't be empty.");
+        }
+
         $this->source = $source;
         $this->uuid = Uuid::uuid4();
     }
