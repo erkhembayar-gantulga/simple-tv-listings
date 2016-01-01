@@ -2,6 +2,7 @@
 
 namespace TVListings\Tests\Integration\Service;
 
+use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -18,20 +19,7 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/../../../src/Domain/Entity"), true);
-
-        $config->setCustomDatetimeFunctions(array(
-            'DATE'  => 'DoctrineExtensions\Query\Mysql\Date',
-        ));
-
-        // database configuration parameters
-        $conn = array(
-            'driver' => 'pdo_sqlite',
-            'path' => __DIR__ . '/db.sqlite',
-        );
-
-        // obtaining the entity manager
-        $this->em = EntityManager::create($conn, $config);
+        $this->em = $this->getEntityManager();
 
         $schemaTool = new SchemaTool($this->em);
         $classes = $this->em->getMetaDataFactory()->getAllMetadata();
@@ -226,5 +214,42 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($listings));
         $this->assertEquals('12:00', $listings[0]->getProgrammedTime());
         $this->assertEquals("Tommorrow's News", $listings[0]->getTitle());
+    }
+
+    /**
+     * @return EntityManager
+     */
+    protected function getEntityManager()
+    {
+        if ($this->em) {
+            return $this->em;
+        }
+
+        $yaml = new Parser();
+        try {
+            $configuration = $yaml->parse(file_get_contents(__DIR__ . '/../../../app/config/config.yml'));
+        } catch (ParseException $e) {
+            printf("Unable to parse the YAML string: %s", $e->getMessage());
+        }
+
+        $doctrineConfig = $configuration['settings']['doctrine'];
+
+        // database configuration parameters
+        $conn = array(
+            'driver' => $doctrineConfig['driver'],
+            'host' => $doctrineConfig['host'],
+            'dbname' => $doctrineConfig['dbname'],
+            'user' => $doctrineConfig['user'],
+            'password' => $doctrineConfig['password'],
+        );
+
+        $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/../../../src/Domain/Entity"), true);
+
+        $config->setCustomDatetimeFunctions(array(
+            'DATE'  => 'DoctrineExtensions\Query\Mysql\Date',
+        ));
+
+        // obtaining the entity manager
+        return EntityManager::create($conn, $config);
     }
 }

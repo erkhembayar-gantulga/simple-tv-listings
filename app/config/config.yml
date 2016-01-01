@@ -6,7 +6,7 @@ settings:
         host: localhost
         dbname: mn_tv_listings
         user: root
-        password: root
+        password: ''
         charset: utf8
     view:
         template_path: '/../app/templates'
