@@ -8,24 +8,23 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css">
 
 <body>
+    <div class="container-fluid">
+          <div class="media-left">
+            <a href="#">
+              <img class="media-object" src="holder.js/300x600" alt="Ads">
+            </a>
+          </div>
 
-    <div class="media">
-      <div class="media-left">
-	<a href="#">
-	  <img class="media-object" src="holder.js/300x600" alt="Ads">
-	</a>
-      </div>
+          <div class="media-body">
+            <iframe src="{{ path_for('show_video', {'uuid': listing.resourceLink }) }}" width="660" height="380" frameborder="0">
+            </iframe>
+          </div>
 
-      <div class="media-body">
-	<iframe src="{{ path_for('show_video', {'uuid': listing.resourceLink }) }}" width="660" height="380" frameborder="0">
-	</iframe>
-      </div>
-
-      <div class="media-right">
-	<a href="#">
-	  <img class="media-object" src="holder.js/300x600" alt="Ads">
-	</a>
-      </div>
+          <div class="media-right">
+            <a href="#">
+              <img class="media-object" src="holder.js/300x600" alt="Ads">
+            </a>
+          </div>
     </div>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.0/holder.min.js"></script>
