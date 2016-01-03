@@ -152,6 +152,9 @@ $app->get('/listings/{id}', function ($request, $response, $args) {
     $container = $this->getContainer();
 
     $listing = $container->get('tvlistings.listing.repository')->find($args['id']);
+    //set video proxy base path
+    $settings = $container->get('settings');
+    $this->router->setBasePath($settings['video_proxy']['base_path']);
 
     $this->view->render(
         $response,

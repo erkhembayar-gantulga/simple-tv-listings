@@ -217,6 +217,45 @@ class DoctrineEntityManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function it_should_order_by_programmed_time()
+    {
+        $em = new DoctrineEntityManager($this->em);
+        $channel = new Channel("MNB", "mnb.png");
+        $em->persist($channel);
+
+        $todayListing = new Listing($channel, "Morning News",  new \DateTime());
+        $todayListing->programAt('7:00');
+        $em->persist($todayListing);
+
+        $todayListing = new Listing($channel, "Afternoon News",  new \DateTime());
+        $todayListing->programAt('12:00');
+        $em->persist($todayListing);
+
+        $todayListing = new Listing($channel, "Evening News",  new \DateTime());
+        $todayListing->programAt('21:00');
+        $em->persist($todayListing);
+
+        $criteria = array(
+            'orderBy' => array(
+               'builder' => function ($alias) {
+                    return sprintf("%s.programDate", $alias);
+               },
+               'value' => 'ASC',
+            ),
+        );
+
+        $listings = $em->findBy(Listing::class, $criteria);
+
+        $this->assertEquals('7:00', $listings[0]->getProgrammedTime());
+        $this->assertEquals("Morning News", $listings[0]->getTitle());
+
+        $this->assertEquals('12:00', $listings[1]->getProgrammedTime());
+        $this->assertEquals("Afternoon News", $listings[1]->getTitle());
+    }
+
+    /**
      * @return EntityManager
      */
     protected function getEntityManager()

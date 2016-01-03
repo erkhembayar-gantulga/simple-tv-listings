@@ -14,3 +14,11 @@ settings:
             cache: '/../app/cache/twig'
             debug: true
             auto_reload: true
+    video_proxy:
+        base_path: 'localhost'
+
+migrations:
+    directory: '/../app/migrations/'
+    name: 'Tvlistings migrations'
+    namespace:  'TVListings\Migrations'
+    table_name: 'tvlisting_migrations'
