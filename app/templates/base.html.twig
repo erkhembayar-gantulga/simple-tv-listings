@@ -12,7 +12,7 @@
 <body>
     <div class="col-lg-4 padd-del channel">
 	<div class="col-lg-12 clearfix">
-	    <div class="tv-listings col-lg-7 padd-del" style="height: 423px; border:1px solid #dbdbdb;">
+	    <div class="tv-listings col-lg-6 padd-del" style="width: 290px; height: 423px; border:1px solid #dbdbdb;">
 		<div class="channel-nav clearfix">
 		    <div class="clearfix">
 			<span class="dialog-prev"><a href="{{ path_for('channel_by_date', {'slug': channel.slug }, {'on': specifiedDate.modify('-1 day').format('Y-m-d')}) }}" class="ch-prev pull-left"><i class="fa fa-angle-left"></i></a></span>
@@ -24,7 +24,7 @@
 			<span class="dialog-date channel-date"> {{ dayOfWeek(specifiedDate) }} / {{ specifiedDate|date('Y-m-d') }}</span>
 		    </div>
 		</div>
-		<div class="col-lg-12 padd-del" style="width: 350px; height: 348px; overflow-y: scroll;" id="program-list">
+		<div class="col-lg-12 padd-del" style="height: 348px; overflow-y: scroll;" id="program-list">
 		    <ul class="list-unstyled clearfix channel-list channel-inner schedule-live">
                         {% for listing in listings %}
                             <li class="past">
