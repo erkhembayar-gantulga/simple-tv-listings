@@ -71,7 +71,7 @@ class ChannelRepository
             ),
             'orderBy' => array(
                'builder' => function ($alias) {
-                    return sprintf("%s.programmedTime", $alias);
+                    return sprintf("%s.programDate", $alias);
                },
                'value' => 'ASC',
             ),
@@ -105,7 +105,7 @@ class ChannelRepository
             ),
             'orderBy' => array(
                'builder' => function ($alias) {
-                    return sprintf("%s.programmedTime", $alias);
+                    return sprintf("%s.programDate", $alias);
                },
                'value' => 'ASC',
             ),

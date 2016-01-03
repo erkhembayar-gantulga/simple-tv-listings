@@ -120,6 +120,22 @@ class Listing
             throw new \InvalidArgumentException("Program time shouldn't be null");
         }
 
+        preg_match('/\d{1,2}:\d{2}/', $programmedTime, $matches);
+        if (0 === count($matches)) {
+            throw new \InvalidArgumentException("Invalid program time");
+        }
+
+        $changedDateTime = new \DateTime(
+            sprintf(
+                '%s %s',
+                $this->programDate->format('Y-m-d'),
+                $programmedTime
+            )
+        );
+
+        $this->changeProgramDate($changedDateTime);
+
+        //@depricated
         $this->programmedTime = $programmedTime;
     }
 
