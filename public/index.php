@@ -3,6 +3,7 @@
 use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use Slim\Middleware\HttpBasicAuthentication;
 use TVListings\Domain\Service\DoctrineEntityManager;
 use TVListings\Domain\Service\VideoProxyService;
 use TVListings\Domain\Repository\ChannelRepository;
@@ -34,9 +35,12 @@ try {
 
 $app = new \Slim\App($configuration);
 
+// Register middlewares
+$app->add(new HttpBasicAuthentication($configuration['basic_auth']));
+
 $container = $app->getContainer();
 
-// Register component on container
+// Register components on container
 $container['view'] = function ($c) {
     $settings = $c->get('settings');
     $twigOptions = $settings['view']['twig'];
@@ -101,10 +105,8 @@ $container['tvlistings.video_proxy.repository'] = function ($container) {
 };
 
 $app->get('/', function ($request, $response, $args) {
-    $container = $this->getContainer();
-
-    $channel = $container->get('tvlistings.channel.repository')->findOneBySlug('mnb');
-    $listings = $container->get('tvlistings.channel.repository')->getTodayListings($channel);
+    $channel = $this->get('tvlistings.channel.repository')->findOneBySlug('mnb');
+    $listings = $this->get('tvlistings.channel.repository')->getTodayListings($channel);
 
     $this->view->render(
         $response,
@@ -120,9 +122,7 @@ $app->get('/', function ($request, $response, $args) {
 })->setName('homepage');
 
 $app->get('/{slug}', function ($request, $response, $args) {
-    $container = $this->getContainer();
-
-    $channel = $container->get('tvlistings.channel.repository')->findOneBySlug($args['slug']);
+    $channel = $this->get('tvlistings.channel.repository')->findOneBySlug($args['slug']);
     if (null === $channel) {
         $uri = $this->router->pathFor(
             'homepage',
@@ -133,7 +133,7 @@ $app->get('/{slug}', function ($request, $response, $args) {
     }
 
     $specifiedDate = new \DateTimeImmutable($request->getParam('on'));
-    $listings = $container->get('tvlistings.channel.repository')->getListingsOf($channel, $specifiedDate);
+    $listings = $this->get('tvlistings.channel.repository')->getListingsOf($channel, $specifiedDate);
 
     $this->view->render(
         $response,
@@ -149,11 +149,9 @@ $app->get('/{slug}', function ($request, $response, $args) {
 })->setName('channel_by_date');
 
 $app->get('/listings/{id}', function ($request, $response, $args) {
-    $container = $this->getContainer();
-
-    $listing = $container->get('tvlistings.listing.repository')->find($args['id']);
+    $listing = $this->get('tvlistings.listing.repository')->find($args['id']);
     //set video proxy base path
-    $settings = $container->get('settings');
+    $settings = $this->get('settings');
     $this->router->setBasePath($settings['video_proxy']['base_path']);
 
     $this->view->render(
@@ -168,9 +166,7 @@ $app->get('/listings/{id}', function ($request, $response, $args) {
 })->setName('listing_detail');
 
 $app->get('/videos/{uuid}', function ($request, $response, $args) {
-    $container = $this->getContainer();
-
-    $videoProxy = $container->get('tvlistings.video_proxy.repository')->find($args['uuid']);
+    $videoProxy = $this->get('tvlistings.video_proxy.repository')->find($args['uuid']);
 
     if (null === $videoProxy) {
         $uri = $this->router->pathFor(
@@ -193,9 +189,7 @@ $app->get('/videos/{uuid}', function ($request, $response, $args) {
 })->setName('show_video');
 
 $app->get('/admin/', function ($request, $response, $args) {
-    $container = $this->getContainer();
-
-    $channels = $container->get('tvlistings.channel.repository')->findAll();
+    $channels = $this->get('tvlistings.channel.repository')->findAll();
 
     $this->view->render(
         $response,
@@ -211,9 +205,7 @@ $app->get('/admin/', function ($request, $response, $args) {
 $app->map(['GET', 'POST'], '/admin/channels/new', function ($request, $response, $args) {
 
     if ($request->isPost()) {
-        $container = $this->getContainer();
-        $parsedBody = $request->getParsedBody();
-        $channelRepository = $container->get('tvlistings.channel.repository');
+        $channelRepository = $this->get('tvlistings.channel.repository');
         $channel = new Channel($parsedBody['name'], $parsedBody['logoPath']);
         $channelRepository->persist($channel);
 
@@ -235,8 +227,7 @@ $app->map(['GET', 'POST'], '/admin/channels/new', function ($request, $response,
 })->setName('admin_channel_new');
 
 $app->post('/admin/channels/{slug}', function ($request, $response, $args) {
-    $container = $this->getContainer();
-    $channel = $container->get('tvlistings.channel.repository')->findOneBySlug($args['slug']);
+    $channel = $this->get('tvlistings.channel.repository')->findOneBySlug($args['slug']);
     if (null === $channel) {
         $uri = $this->router->pathFor(
             'homepage',
@@ -246,7 +237,7 @@ $app->post('/admin/channels/{slug}', function ($request, $response, $args) {
         return $response->withRedirect((string)$uri, 301);
     }
 
-    $container->get('tvlistings.channel.repository')->delete($channel);
+    $this->get('tvlistings.channel.repository')->delete($channel);
 
     $uri = $this->router->pathFor(
         'admin_homepage',
@@ -258,11 +249,10 @@ $app->post('/admin/channels/{slug}', function ($request, $response, $args) {
 
 $app->group('/admin/channels/{slug}', function () {
     $this->get('', function ($request, $response, $args) {
-        $container = $this->getContainer();
         $parsedBody = $request->getParsedBody();
-        $channel = $container->get('tvlistings.channel.repository')->findOneBySlug($args['slug']);
+        $channel = $this->get('tvlistings.channel.repository')->findOneBySlug($args['slug']);
 
-        $listings = $this->getContainer()->get('tvlistings.listing.repository')
+        $listings = $this->get('tvlistings.listing.repository')
             ->findBy($channel);
 
         $this->view->render(
@@ -279,17 +269,17 @@ $app->group('/admin/channels/{slug}', function () {
 
     $this->map(['GET', 'POST'], '/listings/new', function ($request, $response, $args) {
 
-        $channel = $this->getContainer()->get('tvlistings.channel.repository')->findOneBySlug($args['slug']);
+        $channel = $this->get('tvlistings.channel.repository')->findOneBySlug($args['slug']);
         if ($request->isPost()) {
             $parsedBody = $request->getParsedBody();
-            $listingRepository = $this->getContainer()->get('tvlistings.listing.repository');
+            $listingRepository = $this->get('tvlistings.listing.repository');
             $listing = new Listing($channel, $parsedBody['title'], new \DateTime($parsedBody['programDate']));
             $listing->programAt($parsedBody['programAt']);
             $listing->setDescription($parsedBody['description']);
             $listingRepository->persist($listing);
 
             if ($parsedBody['video_source']) {
-                $videoProxyService = $this->getContainer()->get('tvlistings.video_proxy.service');
+                $videoProxyService = $this->get('tvlistings.video_proxy.service');
                 $videoProxyUuid = $videoProxyService->createFromSource($parsedBody['video_source']);
                 $listing->changeResourceLink($videoProxyUuid);
                 $listingRepository->persist($listing);
@@ -318,7 +308,7 @@ $app->group('/admin/channels/{slug}', function () {
 
     $this->map(['GET', 'POST'], '/edit', function ($request, $response, $args) {
 
-        $channelRepository = $this->getContainer()->get('tvlistings.channel.repository');
+        $channelRepository = $this->get('tvlistings.channel.repository');
         $channel = $channelRepository->findOneBySlug($args['slug']);
         if ($request->isPost()) {
             $parsedBody = $request->getParsedBody();
@@ -347,7 +337,7 @@ $app->group('/admin/channels/{slug}', function () {
 });
 
 $app->post('/admin/listings/{id}', function ($request, $response, $args) {
-    $listingRepository = $this->getContainer()->get('tvlistings.listing.repository');
+    $listingRepository = $this->get('tvlistings.listing.repository');
     $listing = $listingRepository->find($args['id']);
     if (null === $listing) {
         $uri = $this->router->pathFor(
@@ -374,7 +364,7 @@ $app->post('/admin/listings/{id}', function ($request, $response, $args) {
 $app->group('/admin/listings/{id}', function () {
     $this->map(['GET', 'POST'], '/edit', function ($request, $response, $args) {
 
-        $listingRepository = $this->getContainer()->get('tvlistings.listing.repository');
+        $listingRepository = $this->get('tvlistings.listing.repository');
         $listing = $listingRepository->find($args['id']);
         if ($request->isPost()) {
             $parsedBody = $request->getParsedBody();
@@ -385,7 +375,7 @@ $app->group('/admin/listings/{id}', function () {
             $listingRepository->persist($listing);
 
             if ($parsedBody['video_source']) {
-                $videoProxyService = $this->getContainer()->get('tvlistings.video_proxy.service');
+                $videoProxyService = $this->get('tvlistings.video_proxy.service');
                 $videoProxyUuid = $videoProxyService->createFromSource($parsedBody['video_source']);
                 $listing->changeResourceLink($videoProxyUuid);
                 $listingRepository->persist($listing);
