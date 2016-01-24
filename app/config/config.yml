@@ -22,3 +22,9 @@ migrations:
     name: 'Tvlistings migrations'
     namespace:  'TVListings\Migrations'
     table_name: 'tvlisting_migrations'
+
+basic_auth:
+    path: "/admin"
+    realm: "Protected"
+    users:
+      admin: "passw0rd"

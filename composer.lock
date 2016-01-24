@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b00daef9870ff598483740eacd211dad",
-    "content-hash": "a9e600ee6d5a1e79155bacc0d87376c0",
+    "hash": "5c743011769be99ea3944357c77c5b78",
+    "content-hash": "cd77d18cd6d54de096b2a40ad202a6b5",
     "packages": [
         {
             "name": "beberlei/DoctrineExtensions",
@@ -765,6 +765,48 @@
             "time": "2016-01-05 21:34:58"
         },
         {
+            "name": "ircmaxell/password-compat",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ircmaxell/password_compat.git",
+                "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/5c5cde8822a69545767f7c7f3058cb15ff84614c",
+                "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/password.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@php.net",
+                    "homepage": "http://blog.ircmaxell.com"
+                }
+            ],
+            "description": "A compatibility library for the proposed simplified password hashing algorithm: https://wiki.php.net/rfc/password_hash",
+            "homepage": "https://github.com/ircmaxell/password_compat",
+            "keywords": [
+                "hashing",
+                "password"
+            ],
+            "time": "2014-11-20 16:49:30"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.17.2",
             "source": {
@@ -1480,6 +1522,54 @@
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
             "time": "2015-12-26 13:39:53"
+        },
+        {
+            "name": "tuupola/slim-basic-auth",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tuupola/slim-basic-auth.git",
+                "reference": "d7bf79966a7a027e693e985ffff5f76f720147a5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tuupola/slim-basic-auth/zipball/d7bf79966a7a027e693e985ffff5f76f720147a5",
+                "reference": "d7bf79966a7a027e693e985ffff5f76f720147a5",
+                "shasum": ""
+            },
+            "require": {
+                "ircmaxell/password-compat": "^1.0",
+                "slim/slim": "^3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.3",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Slim\\Middleware\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mika Tuupola",
+                    "email": "tuupola@appelsiini.net",
+                    "homepage": "http://www.appelsiini.net/"
+                }
+            ],
+            "description": "HTTP Basic Authentication Middleware for Slim Framework",
+            "homepage": "http://www.appelsiini.net/projects/slim-basic-auth",
+            "keywords": [
+                "auth",
+                "middleware",
+                "slim"
+            ],
+            "time": "2015-12-10 08:56:28"
         },
         {
             "name": "twig/twig",
@@ -2501,7 +2591,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "slim/slim": 10
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

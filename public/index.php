@@ -3,6 +3,7 @@
 use Symfony\Component\Yaml\Parser;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use Slim\Middleware\HttpBasicAuthentication;
 use TVListings\Domain\Service\DoctrineEntityManager;
 use TVListings\Domain\Service\VideoProxyService;
 use TVListings\Domain\Repository\ChannelRepository;
@@ -33,9 +34,13 @@ try {
 }
 
 $app = new \Slim\App($configuration);
+
+// Register middlewares
+$app->add(new HttpBasicAuthentication($configuration['basic_auth']));
+
 $container = $app->getContainer();
 
-// Register component on container
+// Register components on container
 $container['view'] = function ($c) {
     $settings = $c->get('settings');
     $twigOptions = $settings['view']['twig'];
