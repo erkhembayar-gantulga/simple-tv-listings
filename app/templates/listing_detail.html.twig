@@ -10,16 +10,20 @@
 <body>
     <div class="container-fluid">
           <div class="media-left">
-                {% include 'banner.html.twig'  %}
+                {% include 'bannerVertical.html.twig'  %}
           </div>
 
           <div class="media-body">
+                <div class="center-block">
+                    {% include 'bannerHorizontal.html.twig'  %}
+                </div>
+
             <iframe src="{{ path_for('show_video', {'uuid': listing.resourceLink }) }}" width="660" height="380" frameborder="0">
             </iframe>
           </div>
 
           <div class="media-right">
-                {% include 'banner.html.twig'  %}
+                {% include 'bannerVertical.html.twig'  %}
           </div>
     </div>
 
