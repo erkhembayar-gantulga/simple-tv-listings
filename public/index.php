@@ -40,7 +40,7 @@ $app->add(new HttpBasicAuthentication($configuration['basic_auth']));
 
 $container = $app->getContainer();
 
-// Register components on container
+// Register twig template service
 $container['view'] = function ($c) {
     $settings = $c->get('settings');
     $twigOptions = $settings['view']['twig'];
@@ -56,6 +56,13 @@ $container['view'] = function ($c) {
     return $view;
 };
 
+// Register flash message service
+$container['flash'] = function ($c) {
+    return new \Slim\Flash\Messages();
+};
+
+
+// Register doctrine entity manager
 $container['doctrine.orm.entity_manager'] = function ($container) {
     $settings = $container->get('settings');
     $isDevMode = true;
@@ -196,6 +203,7 @@ $app->get('/admin/', function ($request, $response, $args) {
         'admin/list.html.twig',
         array(
             'channels' => $channels,
+            'flash' => $this->flash,
         )
     );
 
@@ -205,14 +213,27 @@ $app->get('/admin/', function ($request, $response, $args) {
 $app->map(['GET', 'POST'], '/admin/channels/new', function ($request, $response, $args) {
 
     if ($request->isPost()) {
-        $channelRepository = $this->get('tvlistings.channel.repository');
+        $parsedBody = $request->getParsedBody();
         $channel = new Channel($parsedBody['name'], $parsedBody['logoPath']);
-        $channelRepository->persist($channel);
+
+        $channelRepository = $this->get('tvlistings.channel.repository');
 
         $uri = $this->router->pathFor(
             'admin_homepage',
             array()
         );
+
+        if (null !== $channelRepository->findOneBySlug($channel->getSlug())) {
+            $this->flash->addMessage(
+                'error',
+                sprintf('Энэ суваг (%s) аль хэдийн бүртгэгдсэн байна.', $channel->getName())
+            );
+
+            return $response->withRedirect((string)$uri, 301);
+
+        }
+
+        $channelRepository->persist($channel);
 
         return $response->withRedirect((string)$uri, 301);
     }
