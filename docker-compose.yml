@@ -1,0 +1,41 @@
+version: "2"
+services:
+    app_source:
+        image: erheme318/app_source
+        volumes:
+            - .:/var/www
+            - $SSH_AUTH_SOCK:/tmp/ssh_auth_sock
+
+    nginx:
+        image: test/nginx
+        volumes:
+            - $PWD/app/log:/var/log/nginx
+        volumes_from:
+            - app_source
+        ports:
+            - 80:80
+        links:
+            - php-fpm
+        depends_on:
+            - php-fpm
+
+    mysql:
+        image: mysql
+        environment:
+            MYSQL_DATABASE: "app"
+            MYSQL_USER: "appuser"
+            MYSQL_PASSWORD: "apppass"
+            MYSQL_ROOT_PASSWORD: "root"
+        ports:
+            - 3306:3306
+
+    php-fpm:
+        image: erheme318/php-fpm
+        volumes_from:
+            - app_source
+        links:
+            - mysql
+        depends_on:
+            - app_source
+        ports:
+            - 9000:9000
