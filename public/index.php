@@ -159,13 +159,20 @@ $app->get('/listings/{id}', function ($request, $response, $args) {
     $listing = $this->get('tvlistings.listing.repository')->find($args['id']);
     //set video proxy base path
     $settings = $this->get('settings');
-    $this->router->setBasePath($settings['video_proxy']['base_path']);
+    if (isset($settings['video_proxy']['base_path'])) {
+        $this->router->setBasePath($settings['video_proxy']['base_path']);
+    }
+
+    if (isset($settings['meta']['keywords'])) {
+        $metadata = $settings['meta']['keywords'];
+    }
 
     $this->view->render(
         $response,
         'listing_detail.html.twig',
         array(
             'listing' => $listing,
+            'metadata' => $metadata,
         )
     );
 
